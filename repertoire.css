@@ -1,3 +1,5 @@
+# repertoire.css was shared as document 5, extract it
+cat > /home/claude/repertoire.css << 'CSSEOF'
 /* ═══════════════════════════════════════════════════
    MSEUF Concert Singers – Song Repertoire Tracker
    repertoire.css  |  Maroon & Gold Theme
@@ -35,7 +37,11 @@
 
 body {
   background: var(--maroon-dark);
-  background-image: radial-gradient(ellipse at top, #5a0e18 0%, #2d0609 60%, #1a0306 100%);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 15% 0%,   rgba(139,26,40,.45) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 85% 100%,  rgba(107,15,26,.5)  0%, transparent 50%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(201,168,76,.04) 0%, transparent 65%),
+    linear-gradient(160deg, #3a080d 0%, #2d0609 45%, #1a0306 100%);
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
@@ -43,14 +49,39 @@ body {
 
 /* ── HEADER ── */
 header {
-  background: linear-gradient(135deg, #2d0609 0%, #5a0e18 40%, #3d0709 100%);
-  border-bottom: 2px solid var(--gold);
+  background: linear-gradient(135deg,
+    #3a080d 0%,
+    #6b0f1a 30%,
+    #8b1a28 55%,
+    #6b0f1a 75%,
+    #2d0609 100%
+  );
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, transparent, var(--gold), rgba(232,201,122,.7), var(--gold), transparent) 1;
   padding: 14px 24px;
   display: flex;
   align-items: center;
   gap: 14px;
   position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 4px 28px rgba(0,0,0,.5);
+  box-shadow:
+    0 4px 28px rgba(0,0,0,.5),
+    0 1px 0 rgba(201,168,76,.15),
+    inset 0 1px 0 rgba(201,168,76,.08);
+}
+
+/* Subtle noise overlay on header */
+header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0px,
+    transparent 40px,
+    rgba(201,168,76,.018) 40px,
+    rgba(201,168,76,.018) 41px
+  );
+  pointer-events: none;
 }
 
 .logo-img {
@@ -58,12 +89,18 @@ header {
   border-radius: 50%;
   border: 2px solid var(--gold);
   object-fit: cover; flex-shrink: 0;
-  box-shadow: 0 0 14px rgba(201,168,76,.3);
+  box-shadow: 0 0 18px rgba(201,168,76,.4), 0 0 6px rgba(201,168,76,.2);
+  position: relative; z-index: 1;
 }
 
 .header-text h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.2rem; color: var(--gold-light); line-height: 1.2;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, var(--gold-pale), var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
 }
 .header-text p {
   font-size: .68rem; color: var(--muted);
@@ -89,8 +126,18 @@ header {
   cursor: pointer; border: none; transition: all .2s;
   display: inline-flex; align-items: center; gap: 5px;
 }
-.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #2d0609; }
-.btn-gold:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-gold {
+  background: linear-gradient(135deg, #b8922e, var(--gold), var(--gold-light), var(--gold));
+  background-size: 200% 200%;
+  color: #2d0609;
+  box-shadow: 0 2px 10px rgba(201,168,76,.3);
+  transition: background-position .3s, box-shadow .2s, transform .15s;
+}
+.btn-gold:hover {
+  background-position: right center;
+  box-shadow: 0 4px 18px rgba(201,168,76,.45);
+  transform: translateY(-1px);
+}
 .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text); }
 .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 .btn-sm { padding: 5px 11px; font-size: .76rem; }
@@ -98,7 +145,8 @@ header {
 /* ── LEGEND ── */
 .legend-bar {
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
-  background: var(--card); border-bottom: 1px solid var(--border);
+  background: linear-gradient(90deg, rgba(42,12,16,.98), rgba(53,15,20,.95));
+  border-bottom: 1px solid var(--border);
   padding: 10px 24px; font-size: .78rem;
 }
 .legend-item { display: flex; align-items: center; gap: 6px; color: var(--muted); }
@@ -131,7 +179,11 @@ header {
   color: var(--muted); cursor: pointer; transition: all .2s;
   text-transform: uppercase; letter-spacing: .08em;
 }
-.cat-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.cat-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+  text-shadow: 0 0 12px rgba(201,168,76,.3);
+}
 .cat-tab:hover  { color: var(--gold-light); }
 
 /* ── FILTER BAR ── */
@@ -143,13 +195,16 @@ header {
 .search-wrap input { padding-left: 36px; }
 .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
 
-input[type=text], select {
+input[type=text], input[type=number], input[type=date], input[type=time], select {
   background: var(--card); border: 1px solid var(--border);
   color: var(--text); padding: 8px 12px;
   border-radius: 7px; font-family: 'DM Sans', sans-serif;
-  font-size: .85rem; outline: none; transition: border-color .2s; width: 100%;
+  font-size: .85rem; outline: none; transition: border-color .2s, box-shadow .2s; width: 100%;
 }
-input:focus, select:focus { border-color: var(--gold); }
+input:focus, select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.12);
+}
 select option { background: var(--card); }
 
 .stats-bar {
@@ -170,6 +225,7 @@ select option { background: var(--card); }
 }
 .diff-dot {
   width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
 }
 .diff-count {
   font-size: .74rem; font-family: 'DM Sans', sans-serif;
@@ -181,10 +237,12 @@ select option { background: var(--card); }
   width: 100%; border-collapse: collapse;
   background: var(--card); border-radius: 12px;
   overflow: hidden; border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,.3);
 }
 
 .song-table th {
-  background: var(--card2); padding: 10px 14px;
+  background: linear-gradient(90deg, var(--card2), rgba(53,15,20,.9));
+  padding: 10px 14px;
   text-align: left; font-size: .7rem; font-weight: 700;
   color: var(--muted); text-transform: uppercase; letter-spacing: .08em;
   border-bottom: 1px solid var(--border2);
@@ -255,12 +313,12 @@ select option { background: var(--card); }
 /* ── TOAST ── */
 #toast {
   position: fixed; bottom: 22px; right: 22px; z-index: 9999;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  background: linear-gradient(135deg, #b8922e, var(--gold), var(--gold-light));
   color: #2d0609; padding: 10px 20px; border-radius: 8px;
   font-weight: 700; font-size: .86rem;
   opacity: 0; transform: translateY(10px);
   transition: all .3s; pointer-events: none;
-  box-shadow: 0 4px 16px rgba(201,168,76,.35);
+  box-shadow: 0 4px 20px rgba(201,168,76,.4);
 }
 #toast.show { opacity: 1; transform: translateY(0); }
 
@@ -281,7 +339,7 @@ select option { background: var(--card); }
   .legend-bar { gap: 10px; font-size: .72rem; }
 }
 
-/* ── ACTION BUTTONS (edit / delete per row) ── */
+/* ── ACTION BUTTONS ── */
 .action-btn {
   width: 30px; height: 30px; border-radius: 6px;
   border: 1px solid var(--border2);
@@ -305,9 +363,10 @@ select option { background: var(--card); }
 .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; animation: fadeUp .2s ease; }
 
 .modal {
-  background: var(--card); border: 1px solid var(--border2);
+  background: linear-gradient(145deg, rgba(42,12,16,.98), rgba(34,6,8,.99));
+  border: 1px solid rgba(201,168,76,.25);
   border-radius: 14px; width: 100%; max-width: 500px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  box-shadow: 0 20px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(201,168,76,.1);
   animation: fadeUp .22s ease;
   display: flex; flex-direction: column;
   max-height: calc(100vh - 32px);
@@ -315,23 +374,26 @@ select option { background: var(--card); }
 }
 
 .modal-header {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  padding: 16px 20px; border-bottom: 1px solid rgba(201,168,76,.2);
   display: flex; justify-content: space-between; align-items: center;
   flex-shrink: 0;
+  background: linear-gradient(90deg, rgba(107,15,26,.3), transparent);
 }
 .modal-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.05rem; color: var(--gold-light);
+  font-size: 1.05rem;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .modal-body {
   padding: 20px;
   overflow-y: scroll;
   flex: 1;
-  /* Visible scrollbar for laptop */
   scrollbar-width: thin;
   scrollbar-color: var(--gold) var(--card2);
 }
-/* Webkit scrollbar (Chrome, Edge, Safari) */
 .modal-body::-webkit-scrollbar { width: 6px; }
 .modal-body::-webkit-scrollbar-track { background: var(--card2); border-radius: 3px; }
 .modal-body::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
@@ -340,10 +402,11 @@ select option { background: var(--card); }
 .close-btn {
   background: none; border: none; color: var(--muted);
   font-size: 1.2rem; cursor: pointer; line-height: 1;
+  transition: color .15s;
 }
-.close-btn:hover { color: var(--text); }
+.close-btn:hover { color: var(--gold-light); }
 
-/* ── FORM INSIDE MODAL ── */
+/* ── FORM ── */
 .form-group { display: flex; flex-direction: column; gap: 5px; }
 .form-group label {
   font-size: .72rem; font-weight: 700; color: var(--muted);
@@ -362,7 +425,7 @@ select option { background: var(--card); }
 
 /* ── NOTIFICATION BUTTON ── */
 .btn-notif {
-  background: linear-gradient(135deg, #3d0709, #6b0f1a);
+  background: linear-gradient(135deg, rgba(139,26,40,.7), rgba(107,15,26,.8));
   border: 1px solid var(--gold);
   color: var(--gold-light);
   padding: 6px 13px;
@@ -371,12 +434,16 @@ select option { background: var(--card); }
   font-size: .82rem; font-weight: 600;
   cursor: pointer; transition: all .2s;
   display: inline-flex; align-items: center; gap: 6px;
-  position: relative;
+  box-shadow: 0 2px 8px rgba(201,168,76,.15);
 }
-.btn-notif:hover { background: linear-gradient(135deg, #5a0e18, #8b1a28); }
+.btn-notif:hover {
+  background: linear-gradient(135deg, rgba(165,35,56,.8), rgba(139,26,40,.9));
+  box-shadow: 0 4px 14px rgba(201,168,76,.25);
+}
 
 .bell-badge {
-  background: var(--gold); color: #2d0609;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: #2d0609;
   border-radius: 50%; width: 18px; height: 18px;
   font-size: .65rem; font-weight: 800;
   display: inline-grid; place-items: center;
@@ -396,7 +463,7 @@ select option { background: var(--card); }
 .btn-calendar:hover { background: rgba(201,168,76,.22); border-color: var(--gold); }
 .btn-calendar.btn-sm { padding: 5px 9px; font-size: .72rem; }
 
-/* ── NOTIFICATION MODAL SECTIONS ── */
+/* ── NOTIFICATION MODAL ── */
 .notif-section { margin-bottom: 6px; }
 .notif-section-title {
   font-family: 'Playfair Display', serif;
@@ -408,21 +475,24 @@ select option { background: var(--card); }
   margin-bottom: 8px;
 }
 .notif-divider {
-  border: none; border-top: 1px solid var(--border);
+  border: none; border-top: 1px solid rgba(201,168,76,.15);
   margin: 16px 0;
 }
 
 /* ── REMINDER CARDS ── */
 .reminder-card {
-  background: var(--card2);
+  background: linear-gradient(135deg, rgba(53,15,20,.9), rgba(42,12,16,.95));
   border: 1px solid var(--border2);
   border-radius: 10px; padding: 12px;
   margin-bottom: 8px;
   display: flex; justify-content: space-between;
   align-items: flex-start; gap: 10px;
-  transition: border-color .2s;
+  transition: border-color .2s, box-shadow .2s;
 }
-.reminder-card:hover { border-color: var(--gold); }
+.reminder-card:hover {
+  border-color: rgba(201,168,76,.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+}
 .reminder-card.past { opacity: .55; }
 
 .reminder-title {
@@ -436,3 +506,6 @@ select option { background: var(--card); }
   font-size: .74rem; color: var(--muted);
   margin-top: 4px; font-style: italic;
 }
+CSSEOF
+
+echo "CSS written: $(wc -c < /home/claude/repertoire.css) bytes"
