@@ -1,11 +1,25 @@
 /* ═══════════════════════════════════════════════════
    MSEUF Concert Singers – Song Repertoire Tracker
-   repertoire.js  |  Supabase shared database
+   repertoire.js | Firebase Firestore
 ═══════════════════════════════════════════════════ */
 
-const SUPABASE_URL = "https://aevaojekkijhzlxthlpb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_B5ayfQIcgSAFmTYGE7ju2Q_4EDrigPo";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDocs, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD9u8_gIBZ7Dz75MKSN8KWANnMiT_YlgzM",
+  authDomain: "mseufcsrepertoire-3a24f.firebaseapp.com",
+  projectId: "mseufcsrepertoire-3a24f",
+  storageBucket: "mseufcsrepertoire-3a24f.firebasestorage.app",
+  messagingSenderId: "667145296565",
+  appId: "1:667145296565:web:046acc0e3823060d3bfcfc",
+  measurementId: "G-53PHR6TQT9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const auth = getAuth(app);
 
 let statuses    = {};
 let customSongs = [];
@@ -43,6 +57,31 @@ function showToast(msg, isError = false) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
 }
 
+// Auth
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "https://carlosjosealbiol.github.io/mseufcsrepertoire/index.html";
+  } else {
+    loadUserInfo(user);
+    loadAll();
+  }
+});
+
+function loadUserInfo(user) {
+  const nameEl   = document.getElementById("header-name");
+  const avatarEl = document.getElementById("header-avatar");
+  if (nameEl) nameEl.textContent = user.displayName || user.email?.split("@")[0] || "Member";
+  if (avatarEl && user.photoURL) {
+    avatarEl.src = user.photoURL;
+    avatarEl.style.display = "block";
+  }
+}
+
+async function signOutApp() {
+  await signOut(auth);
+  window.location.href = "https://carlosjosealbiol.github.io/mseufcsrepertoire/index.html";
+}
+
 // Load
 async function loadAll() {
   await Promise.all([loadStatuses(), loadCustomSongs()]);
@@ -50,10 +89,9 @@ async function loadAll() {
 
 async function loadStatuses() {
   try {
-    const { data, error } = await db.from("repertoire_status").select("id, status");
-    if (error) throw error;
+    const snap = await getDocs(collection(db, "repertoire_status"));
     statuses = {};
-    (data || []).forEach(r => { statuses[r.id] = r.status; });
+    snap.forEach(d => { statuses[d.id] = d.data().status; });
     renderSongs();
   } catch (err) {
     showToast("Could not load: " + err.message, true);
@@ -63,9 +101,10 @@ async function loadStatuses() {
 
 async function loadCustomSongs() {
   try {
-    const { data, error } = await db.from("repertoire_songs").select("*").order("created_at", { ascending: true });
-    if (error) throw error;
-    customSongs = data || [];
+    const snap = await getDocs(collection(db, "repertoire_songs"));
+    customSongs = [];
+    snap.forEach(d => customSongs.push({ id: d.id, ...d.data() }));
+    customSongs.sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
     renderSongs();
   } catch (err) { console.error(err); }
 }
@@ -87,9 +126,10 @@ async function setStatus(songId, newStatus) {
   clearTimeout(saving[songId]);
   saving[songId] = setTimeout(async () => {
     try {
-      const { error } = await db.from("repertoire_status")
-        .upsert({ id: songId, status: finalStatus, updated_at: new Date().toISOString() });
-      if (error) throw error;
+      await setDoc(doc(db, "repertoire_status", songId), {
+        status: finalStatus,
+        updated_at: new Date().toISOString()
+      });
       showToast(finalStatus === "none" ? "Status cleared" : STATUS_LABELS[finalStatus]);
     } catch (err) { showToast("Save failed: " + err.message, true); }
   }, 400);
@@ -150,15 +190,12 @@ async function saveSongModal() {
   const btn = document.getElementById("m-save-btn");
   btn.disabled = true; btn.textContent = "Saving…";
   try {
-    if (editId) {
-      const { error } = await db.from("repertoire_songs").update({ title, difficulty: diff, solo, category }).eq("id", editId);
-      if (error) throw error;
-      showToast("✅ Song updated!");
-    } else {
-      const { error } = await db.from("repertoire_songs").insert([{ id: "custom_" + Date.now(), title, difficulty: diff, solo, category, created_at: new Date().toISOString() }]);
-      if (error) throw error;
-      showToast("✅ Song added!");
-    }
+    const id = editId || "custom_" + Date.now();
+    await setDoc(doc(db, "repertoire_songs", id), {
+      title, difficulty: diff, solo, category,
+      created_at: new Date().toISOString()
+    });
+    showToast(editId ? "✅ Song updated!" : "✅ Song added!");
     closeModal();
     await loadCustomSongs();
   } catch (err) { showToast("Save failed: " + err.message, true); }
@@ -178,9 +215,8 @@ async function confirmDelete() {
   const btn = document.getElementById("confirm-delete-btn");
   btn.disabled = true; btn.textContent = "Deleting…";
   try {
-    const { error } = await db.from("repertoire_songs").delete().eq("id", deletingId);
-    if (error) throw error;
-    await db.from("repertoire_status").delete().eq("id", deletingId);
+    await deleteDoc(doc(db, "repertoire_songs", deletingId));
+    await deleteDoc(doc(db, "repertoire_status", deletingId));
     delete statuses[deletingId];
     showToast("Song deleted");
     closeDeleteModal();
@@ -297,37 +333,23 @@ function escHtml(s) {
   return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+// Expose functions globally
+window.setStatus        = setStatus;
+window.openAddModal     = openAddModal;
+window.openAddModalFor  = openAddModalFor;
+window.openEditModal    = openEditModal;
+window.closeModal       = closeModal;
+window.saveSongModal    = saveSongModal;
+window.openDeleteModal  = openDeleteModal;
+window.closeDeleteModal = closeDeleteModal;
+window.confirmDelete    = confirmDelete;
+window.switchCat        = switchCat;
+window.loadAll          = loadAll;
+window.signOutApp       = signOutApp;
+
 document.addEventListener("DOMContentLoaded", () => {
-  loadAll();
   setInterval(loadAll, 15000);
   document.getElementById("song-modal").addEventListener("click", e => { if (e.target === document.getElementById("song-modal")) closeModal(); });
   document.getElementById("delete-modal").addEventListener("click", e => { if (e.target === document.getElementById("delete-modal")) closeDeleteModal(); });
   document.getElementById("m-title").addEventListener("keydown", e => { if (e.key === "Enter") saveSongModal(); });
-});
-
-// ═══════════════════ AUTH ═══════════════════
-async function signOutApp() {
-  await db.auth.signOut();
-  window.location.href = "https://carlosjosealbiol.github.io/mseufcsrepertoire/index.html";
-}
-
-async function loadUserInfo() {
-  const { data: { session } } = await db.auth.getSession();
-  if (!session) return;
-  const user = session.user;
-  const meta = user.user_metadata || {};
-
-  const nameEl   = document.getElementById("header-name");
-  const avatarEl = document.getElementById("header-avatar");
-
-  if (nameEl) nameEl.textContent = meta.full_name || meta.name || user.email?.split("@")[0] || "Member";
-  if (avatarEl && (meta.avatar_url || meta.picture)) {
-    avatarEl.src = meta.avatar_url || meta.picture;
-    avatarEl.style.display = "block";
-  }
-}
-
-// Call on init
-document.addEventListener("DOMContentLoaded", () => {
-  loadUserInfo();
 });
