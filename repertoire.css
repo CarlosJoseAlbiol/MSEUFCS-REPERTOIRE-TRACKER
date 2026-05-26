@@ -1,5 +1,3 @@
-# repertoire.css was shared as document 5, extract it
-cat > /home/claude/repertoire.css << 'CSSEOF'
 /* ═══════════════════════════════════════════════════
    MSEUF Concert Singers – Song Repertoire Tracker
    repertoire.css  |  Maroon & Gold Theme
@@ -506,6 +504,3 @@ select option { background: var(--card); }
   font-size: .74rem; color: var(--muted);
   margin-top: 4px; font-style: italic;
 }
-CSSEOF
-
-echo "CSS written: $(wc -c < /home/claude/repertoire.css) bytes"
