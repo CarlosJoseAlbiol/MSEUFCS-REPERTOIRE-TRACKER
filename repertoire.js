@@ -110,7 +110,7 @@ async function loadCustomSongs() {
 }
 
 function getMergedSongs(cat, diff) {
-  const builtin = ((SONGS_DB[cat] || {})[diff] || []);
+  const builtin = ((window.SONGS_DB[cat] || {})[diff] || []);
   const custom  = customSongs.filter(s => s.category === cat && s.difficulty === diff)
     .map(s => ({ id: s.id, title: s.title, solo: s.solo || "NONE", isCustom: true }));
   return [...builtin, ...custom];
