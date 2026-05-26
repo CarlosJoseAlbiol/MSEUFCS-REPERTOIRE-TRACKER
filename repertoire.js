@@ -7,6 +7,420 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, doc, setDoc, getDocs, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+const SONGS_DB = {
+  "BATCH": {
+    "EASY": [
+      {
+        "title": "Now That I Have You",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_EASY_0"
+      },
+      {
+        "title": "Ikaw Lamang",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_EASY_1"
+      },
+      {
+        "title": "L'Important C'est La Rose",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_EASY_2"
+      },
+      {
+        "title": "Ave Verum Corpus",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_3"
+      },
+      {
+        "title": "Viri Galilaei",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_4"
+      },
+      {
+        "title": "Manila, Manila",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_5"
+      },
+      {
+        "title": "Rosas Pandan",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_EASY_6"
+      },
+      {
+        "title": "Kalesa",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_EASY_7"
+      },
+      {
+        "title": "Above All Else",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_8"
+      },
+      {
+        "title": "One Thing I Ask",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_9"
+      },
+      {
+        "title": "Bibingka",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_EASY_10"
+      },
+      {
+        "title": "Til I Met You",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_11"
+      },
+      {
+        "title": "Leron, Leron Sinta",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_12"
+      },
+      {
+        "title": "Dahil Sa Iyo",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_13"
+      },
+      {
+        "title": "Simbang Gabi",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_EASY_14"
+      },
+      {
+        "title": "Bonse Aba",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_15"
+      },
+      {
+        "title": "Izzar Ederak",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_16"
+      },
+      {
+        "title": "Noypi",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_17"
+      },
+      {
+        "title": "Why We Sing",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_18"
+      },
+      {
+        "title": "For Good",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_EASY_19"
+      },
+      {
+        "title": "Na'ay",
+        "solo": "NONE",
+        "id": "builtin_BATCH_EASY_20"
+      }
+    ],
+    "MEDIUM": [
+      {
+        "title": "Kruhay",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_MEDIUM_0"
+      },
+      {
+        "title": "Chua-ay",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_MEDIUM_1"
+      },
+      {
+        "title": "Exultate Justi In Domino",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_2"
+      },
+      {
+        "title": "Namamasko",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_MEDIUM_3"
+      },
+      {
+        "title": "Gaano Ko Ikaw Kamahal",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_4"
+      },
+      {
+        "title": "Nais Ko",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_5"
+      },
+      {
+        "title": "Cebuano Medley",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_MEDIUM_6"
+      },
+      {
+        "title": "Pangarap Ko ang Ibigin ka",
+        "solo": "DESCANT",
+        "id": "builtin_BATCH_MEDIUM_7"
+      },
+      {
+        "title": "Bahay",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_8"
+      },
+      {
+        "title": "Kay Ganda ng Ating Musika",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_9"
+      },
+      {
+        "title": "Minsan ang Minahal ay Ako",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_MEDIUM_10"
+      },
+      {
+        "title": "Sa Mahal Kong Bayan",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_11"
+      },
+      {
+        "title": "Rosita De Un Verde Palmar",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_12"
+      },
+      {
+        "title": "The Majesty and Glory of Your Name",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_13"
+      },
+      {
+        "title": "Abba Gold",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_14"
+      },
+      {
+        "title": "Bagani",
+        "solo": "NONE",
+        "id": "builtin_BATCH_MEDIUM_15"
+      }
+    ],
+    "HARD": [
+      {
+        "title": "Kaisa-isa Niyan",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_0"
+      },
+      {
+        "title": "Padayon",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_HARD_1"
+      },
+      {
+        "title": "Himig ng Hangin",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_2"
+      },
+      {
+        "title": "Three Kalinga Chants",
+        "solo": "SOLO",
+        "id": "builtin_BATCH_HARD_3"
+      },
+      {
+        "title": "Talismane",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_4"
+      },
+      {
+        "title": "Iisang Bangka",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_5"
+      },
+      {
+        "title": "Alleluia",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_6"
+      },
+      {
+        "title": "Bituing Walang Ningning",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_7"
+      },
+      {
+        "title": "Sana'y Wala Nang Wakas",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_8"
+      },
+      {
+        "title": "Piliin Mo Ang Pilipinas",
+        "solo": "NONE",
+        "id": "builtin_BATCH_HARD_9"
+      }
+    ]
+  },
+  "ENGLISH_MASS": {
+  "EASY": [
+    {
+      "title": "Alleluia - Jeremiah Neztler",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_0"
+    },
+    {
+      "title": "Ashes",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_1"
+    },
+    {
+      "title": "Blessed Be The Name",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_2"
+    },
+    {
+      "title": "Lead Me Lord",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_3"
+    },
+    {
+      "title": "Sing to the Lord",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_4"
+    },
+    {
+      "title": "Take and Receive",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_5"
+    },
+    {
+      "title": "Thanks to the Lord",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_EASY_6"
+    }
+  ],
+  "MEDIUM": [
+    {
+      "title": "English Mass",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_MEDIUM_0"
+    },
+    {
+      "title": "Mass Songs Wedding",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_MEDIUM_1"
+    },
+    {
+      "title": "Prayer of St. Francis of Assisi",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_MEDIUM_2"
+    },
+    {
+      "title": "Prayer of St. Theresa of Avila",
+      "solo": "NONE",
+      "id": "builtin_ENGLISH_MASS_MEDIUM_3"
+    }
+  ],
+  "HARD": []
+},
+  "TAGALOG_MASS": {
+  "EASY": [
+    {
+      "title": "Alay Sa Diyos",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_0"
+    },
+    {
+      "title": "Ama Namin",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_1"
+    },
+    {
+      "title": "Awit Ng Paghahangad",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_2"
+    },
+    {
+      "title": "Bayan, Magsiawit Na",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_3"
+    },
+    {
+      "title": "Great Amen",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_4"
+    },
+    {
+      "title": "Humayo't Ihayag",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_5"
+    },
+    {
+      "title": "Ito Ang Araw",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_6"
+    },
+    {
+      "title": "Kordero ng Diyos",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_7"
+    },
+    {
+      "title": "Kyrie Eleison",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_8"
+    },
+    {
+      "title": "Laudate Dominum",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_9"
+    },
+    {
+      "title": "Panunumpa",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_10"
+    },
+    {
+      "title": "Papuri Sa Diyos",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_11"
+    },
+    {
+      "title": "Santo",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_12"
+    },
+    {
+      "title": "Si Kristo'y Namatay",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_13"
+    },
+    {
+      "title": "Stella Maris",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_14"
+    },
+    {
+      "title": "Tinapay ng Buhay",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_EASY_15"
+    }
+  ],
+  "MEDIUM": [
+    {
+      "title": "Banal Ka Poon",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_MEDIUM_0"
+    },
+    {
+      "title": "Misa Pastorela",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_MEDIUM_1"
+    },
+    {
+      "title": "Pag-aalay Ng Bayan",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_MEDIUM_2"
+    },
+    {
+      "title": "Panginoon, Kaawaan Mo Kami",
+      "solo": "NONE",
+      "id": "builtin_TAGALOG_MASS_MEDIUM_3"
+    }
+  ],
+  "HARD": []
+};
+
 const firebaseConfig = {
   apiKey: "AIzaSyD9u8_gIBZ7Dz75MKSN8KWANnMiT_YlgzM",
   authDomain: "mseufcsrepertoire-3a24f.firebaseapp.com",
@@ -110,7 +524,7 @@ async function loadCustomSongs() {
 }
 
 function getMergedSongs(cat, diff) {
-  const builtin = ((window.SONGS_DB[cat] || {})[diff] || []);
+  const builtin = ((SONGS_DB[cat] || {})[diff] || []);
   const custom  = customSongs.filter(s => s.category === cat && s.difficulty === diff)
     .map(s => ({ id: s.id, title: s.title, solo: s.solo || "NONE", isCustom: true }));
   return [...builtin, ...custom];
